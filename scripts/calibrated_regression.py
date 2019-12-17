@@ -117,23 +117,30 @@ class CalibratedRegression:
         ax.set_title('Predicted CDF vs Empirical CDF')
         return ax
     
-    def plot_diagnostic_curve(self, ax, intervals):
+    def plot_diagnostic_curve(self, ax, X_test, y_test):
         '''Plot diagnostic curve as described in paper (figure 3c).'''
-        assert self.posterior_predictive_test.shape, 'Call predict() first'
-        
-        # uncalibrated
-        observed_uncalibrated = np.mean(self.predicted_cdf.reshape(1, -1) <= intervals, axis=1) 
-        ax.plot(intervals, observed_uncalibrated, 'o-', color='purple', label='uncalibrated')
-        
-        # calibrated
-        predicted_values = self.pcdf(self.posterior_predictive_test, self.y_pred)
-        calibrated_values = self.isotonic.predict(predicted_values)
-        observed_calibrated = np.mean(calibrated_values.reshape(1, -1) <= intervals, axis=1) 
-        ax.plot(intervals, observed_calibrated, 'o-', color='red', label='calibrated')
-        
-        # default line
-        ax.plot([0,1],[0,1], '--', color='black', alpha=0.7)
-        ax.set_ylabel('Observed Confidence Level', fontsize=17)
-        ax.set_xlabel('Expected Confidence Level', fontsize=17)
-        ax.legend(fontsize=17)
+        conf_level_lower_bounds = np.arange(start=0.025, stop=0.5, step=0.025)
+        conf_levels = 1-2*conf_level_lower_bounds
+        unc_pcts = []
+        cal_pcts = []
+
+        for cl_lower in conf_level_lower_bounds:
+            quants = [cl_lower, 1-cl_lower]
+            post_pred_test, new_quantiles = self.predict(X_test, y_test, quants)
+            
+            cal_lower, cal_upper = np.quantile(post_pred_test, new_quantiles, axis=1)
+            unc_lower, unc_upper = np.quantile(post_pred_test, quants, axis=1)
+            
+            perc_within_unc = np.mean((y_test <= unc_upper)&(y_test >= unc_lower))
+            perc_within_cal = np.mean((y_test <= cal_upper)&(y_test >= cal_lower))
+            
+            unc_pcts.append(perc_within_unc)
+            cal_pcts.append(perc_within_cal)
+
+        ax.plot([0,1],[0,1],'--', color='grey')
+        ax.plot(conf_levels, unc_pcts, color='purple', label='uncalibrated')
+        ax.plot(conf_levels, cal_pcts, color='red', label='calibrated')
+        ax.legend(fontsize=14)
+        ax.set_xlabel('Predicted Confidence Level', fontsize=16)
+        ax.set_ylabel('Observed Confidence Level', fontsize=16)
         return ax
