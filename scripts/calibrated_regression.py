@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.isotonic import IsotonicRegression
+from sklearn.metrics import mean_squared_error
 
 class CalibratedRegression:
     
@@ -143,4 +144,33 @@ class CalibratedRegression:
         ax.legend(fontsize=14)
         ax.set_xlabel('Predicted Confidence Level', fontsize=16)
         ax.set_ylabel('Observed Confidence Level', fontsize=16)
+        return ax
+
+    def plot_intervals(self, ax, X_test, y_test, quantiles=[0.05, 0.5, 0.95]):
+        '''Plot uncalibrated and calibrated predictive intervals.'''
+        assert len(ax)==2, 'Need to provide two axes'
+
+        post_pred_test, new_quantiles = self.predict(X_test, y_test, quantiles)
+        cal_lower, cal_median, cal_upper = np.quantile(post_pred_test, new_quantiles, axis=1)
+        unc_lower, unc_median, unc_upper = np.quantile(post_pred_test, quantiles, axis=1)
+        perc_within_unc = np.mean((y_test <= unc_upper)&(y_test >= unc_lower))
+        perc_within_cal = np.mean((y_test <= cal_upper)&(y_test >= cal_lower))
+
+        ax[0].plot(X_test, y_test, 'o', color='black', alpha=0.2, markersize=3)
+        ax[0].set_title(f'Uncalibrated: {100*perc_within_unc:.2f}% of the test points within 90% interval', 
+            fontsize=17)
+        ax[0].set_xlabel('X_test', fontsize=17)
+        ax[0].set_ylabel('y_test', fontsize=17)
+        ax[0].fill_between(X_test, unc_lower, unc_upper, color='green', alpha=0.2)
+        ax[0].plot(X_test, unc_median, label=f'Median. MSE={mean_squared_error(y_test, unc_median):.2f}')
+        ax[0].legend(fontsize=17)
+
+        ax[1].plot(X_test, y_test, 'o', color='black', alpha=0.2, markersize=3)
+        ax[1].set_title(f'Calibrated: {100*perc_within_cal:.2f}% of the test points within 90% interval', 
+            fontsize=17)
+        ax[1].set_xlabel('X_test', fontsize=17)
+        ax[1].set_ylabel('y_test', fontsize=17)
+        ax[1].fill_between(X_test, cal_lower, cal_upper, color='yellow', alpha=0.2)
+        ax[1].plot(X_test, cal_median, label=f'Median. MSE={mean_squared_error(y_test, cal_median):.2f}')
+        ax[1].legend(fontsize=17)
         return ax
