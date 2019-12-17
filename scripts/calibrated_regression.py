@@ -138,8 +138,8 @@ class CalibratedRegression:
             cal_pcts.append(perc_within_cal)
 
         ax.plot([0,1],[0,1],'--', color='grey')
-        ax.plot(conf_levels, unc_pcts, color='purple', label='uncalibrated')
-        ax.plot(conf_levels, cal_pcts, color='red', label='calibrated')
+        ax.plot(conf_levels, unc_pcts, '-o', color='purple', label='uncalibrated')
+        ax.plot(conf_levels, cal_pcts, '-o', color='red', label='calibrated')
         ax.legend(fontsize=14)
         ax.set_xlabel('Predicted Confidence Level', fontsize=16)
         ax.set_ylabel('Observed Confidence Level', fontsize=16)
