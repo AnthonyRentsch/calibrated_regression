@@ -112,10 +112,11 @@ class CalibratedRegression:
         '''Plot calibration curve as described in paper (figure 3b).'''
         assert self.empirical_cdf is not None, 'Call fit() first'
         ax.scatter(self.predicted_cdf, self.empirical_cdf, alpha=0.7)
-        ax.plot([0,1],[0,1],'--', color='grey')
+        ax.plot([0,1],[0,1],'--', color='grey', label='Perfect calibration')
         ax.set_xlabel('Predicted', fontsize=17)
         ax.set_ylabel('Empirical', fontsize=17)
-        ax.set_title('Predicted CDF vs Empirical CDF')
+        ax.set_title('Predicted CDF vs Empirical CDF', fontsize=17)
+        ax.legend()
         return ax
 
     def plot_diagnostic_curve(self, ax, X_test, y_test):
@@ -142,8 +143,9 @@ class CalibratedRegression:
         ax.plot(conf_levels, unc_pcts, '-o', color='purple', label='uncalibrated')
         ax.plot(conf_levels, cal_pcts, '-o', color='red', label='calibrated')
         ax.legend(fontsize=14)
-        ax.set_xlabel('Predicted Confidence Level', fontsize=16)
-        ax.set_ylabel('Observed Confidence Level', fontsize=16)
+        ax.set_title('Diagnostic Plot', fontsize=17)
+        ax.set_xlabel('Predicted Confidence Level', fontsize=17)
+        ax.set_ylabel('Observed Confidence Level', fontsize=17)
         return ax
 
     def plot_intervals(self, ax, X_test, y_test, quantiles=[0.05, 0.5, 0.95]):
