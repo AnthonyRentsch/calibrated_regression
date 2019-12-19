@@ -116,7 +116,7 @@ class CalibratedRegression:
         ax.set_xlabel('Predicted', fontsize=17)
         ax.set_ylabel('Empirical', fontsize=17)
         ax.set_title('Predicted CDF vs Empirical CDF', fontsize=17)
-        ax.legend()
+        ax.legend(fontsize=17)
         return ax
 
     def plot_diagnostic_curve(self, ax, X_test, y_test):
