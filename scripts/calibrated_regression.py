@@ -312,12 +312,7 @@ class CalibratedRegression:
         perc_within_cal = np.mean((y_test <= cal_upper)&(y_test >= cal_lower))
 
         ax[0].plot(X_test, y_test, 'o', color='black', alpha=0.2, markersize=3)
-<<<<<<< HEAD
-        ax[0].set_title(f'Uncalibrated: {100*perc_within_unc:.2f}% of the test points within {round((1-2*quantiles[0])*100)}% interval', 
-=======
-        ax[0].set_title(f'Uncalibrated: {100*perc_within_unc:.2f}% of the test points within 90% interval',
->>>>>>> master
-            fontsize=17)
+        ax[0].set_title(f'Uncalibrated: {100*perc_within_unc:.2f}% of the test points within {round((1-2*quantiles[0])*100)}% interval', fontsize=17)
         ax[0].set_xlabel('X', fontsize=17)
         ax[0].set_ylabel('y', fontsize=17)
         ax[0].fill_between(X_test, unc_lower, unc_upper, color='green', alpha=0.2)
@@ -325,12 +320,7 @@ class CalibratedRegression:
         ax[0].legend(fontsize=17)
 
         ax[1].plot(X_test, y_test, 'o', color='black', alpha=0.2, markersize=3)
-<<<<<<< HEAD
-        ax[1].set_title(f'Calibrated: {100*perc_within_cal:.2f}% of the test points within {round((1-2*quantiles[0])*100)}% interval', 
-=======
-        ax[1].set_title(f'Calibrated: {100*perc_within_cal:.2f}% of the test points within 90% interval',
->>>>>>> master
-            fontsize=17)
+        ax[1].set_title(f'Calibrated: {100*perc_within_cal:.2f}% of the test points within {round((1-2*quantiles[0])*100)}% interval', fontsize=17)
         ax[1].set_xlabel('X', fontsize=17)
         ax[1].set_ylabel('y', fontsize=17)
         ax[1].fill_between(X_test, cal_lower, cal_upper, color='yellow', alpha=0.2)
