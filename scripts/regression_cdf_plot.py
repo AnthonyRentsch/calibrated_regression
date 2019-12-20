@@ -19,7 +19,7 @@ FONTSIZE = 16
 
 # plot data
 ax.plot(np.linspace(0, 4), np.linspace(0, 4)*2, linewidth=4, alpha=0.5, label=r'$\hat{y} = f(x)$')
-ax.scatter(x, y, color='darkblue')
+ax.scatter(x, y, color='darkblue', label=r'$(x_t, y_t)$')
 
 i = 0
 # iterate through demo points
